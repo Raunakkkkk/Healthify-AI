@@ -8,10 +8,12 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.30",
     "@google/generative-ai": "^0.21.0",
     "@langchain/core": "^0.3.0",
     "@langchain/google-genai": "^0.1.0",
     "@langchain/langgraph": "^0.2.0",
+    "ai": "^6.0.97",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.0",
     "cors": "^2.8.5",

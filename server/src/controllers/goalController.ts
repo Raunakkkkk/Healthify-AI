@@ -61,3 +61,21 @@ export async function updateGoal(req: AuthRequest, res: Response, next: NextFunc
     next(err);
   }
 }
+
+export async function deleteGoal(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const goal = await Goal.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.userId,
+    });
+
+    if (!goal) {
+      res.status(404).json({ error: "Goal not found" });
+      return;
+    }
+
+    res.json({ message: "Goal deleted" });
+  } catch (err) {
+    next(err);
+  }
+}

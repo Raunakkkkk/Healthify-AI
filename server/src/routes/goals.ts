@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getGoals, createGoal, updateGoal } from "../controllers/goalController.js";
+import { getGoals, createGoal, updateGoal, deleteGoal } from "../controllers/goalController.js";
 import { authenticate } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import { z } from "zod";
@@ -20,5 +20,6 @@ router.use(authenticate);
 router.get("/", getGoals as any);
 router.post("/", validate(goalSchema), createGoal as any);
 router.put("/:id", updateGoal as any);
+router.delete("/:id", deleteGoal as any);
 
 export default router;
