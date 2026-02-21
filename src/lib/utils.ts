@@ -30,6 +30,19 @@ export function isToday(date: string | Date) {
   );
 }
 
+/** Today's date in local timezone as YYYY-MM-DD (for entry store and calendar). */
+export function todayLocalDateStr(): string {
+  return dateToLocalDateStr(new Date());
+}
+
+/** Format a Date as local YYYY-MM-DD. */
+export function dateToLocalDateStr(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export function getDateRange(days: number) {
   const end = new Date();
   const start = new Date();

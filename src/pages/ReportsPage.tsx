@@ -48,9 +48,9 @@ export default function ReportsPage() {
           <h1 className="text-2xl font-bold tracking-tight">Reports</h1>
           <p className="text-muted-foreground">Visualize your nutrition data</p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-80" />
+            <Skeleton key={i} className="h-56 sm:h-80" />
           ))}
         </div>
       </div>
@@ -65,15 +65,17 @@ export default function ReportsPage() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="macros">Macros</TabsTrigger>
-          <TabsTrigger value="micros">Micronutrients</TabsTrigger>
-          <TabsTrigger value="goals">Goals</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-1 px-1">
+          <TabsList className="inline-flex w-auto min-w-full sm:w-full">
+            <TabsTrigger value="overview" className="flex-1">Overview</TabsTrigger>
+            <TabsTrigger value="macros" className="flex-1">Macros</TabsTrigger>
+            <TabsTrigger value="micros" className="flex-1">Micros</TabsTrigger>
+            <TabsTrigger value="goals" className="flex-1">Goals</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="overview" className="mt-4">
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             <CalorieTrendChart data={weeklyCalories} calorieTarget={currentGoal?.calorieTarget} />
             <GoalComparison data={goalVsActual} />
           </div>

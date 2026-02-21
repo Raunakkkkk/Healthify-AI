@@ -55,7 +55,7 @@ export default function SignupPage() {
                 <Label htmlFor="name">Full Name</Label>
                 <Input
                   id="name" value={name} onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe" required
+                  placeholder="e.g. Alex Johnson" required
                 />
               </div>
 
@@ -64,7 +64,7 @@ export default function SignupPage() {
                 <Input
                   id="email" type="email" value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com" required
+                  placeholder="name@example.com" required
                 />
               </div>
 
@@ -74,7 +74,7 @@ export default function SignupPage() {
                   <Input
                     id="password" type={showPw ? "text" : "password"}
                     value={password} onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••" required minLength={6}
+                    placeholder="Create a password (6+ characters)" required minLength={6}
                   />
                   <button
                     type="button" onClick={() => setShowPw(!showPw)}
@@ -90,7 +90,7 @@ export default function SignupPage() {
                 <Input
                   id="confirm" type="password" value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
-                  placeholder="••••••••" required
+                  placeholder="Re-enter password" required
                 />
               </div>
             </CardContent>

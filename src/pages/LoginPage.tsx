@@ -50,7 +50,7 @@ export default function LoginPage() {
                 <Input
                   id="email" type="email" value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com" required
+                  placeholder="Email address" required
                 />
               </div>
 
@@ -60,7 +60,7 @@ export default function LoginPage() {
                   <Input
                     id="password" type={showPw ? "text" : "password"}
                     value={password} onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••" required
+                    placeholder="Password" required
                   />
                   <button
                     type="button" onClick={() => setShowPw(!showPw)}

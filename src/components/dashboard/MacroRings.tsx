@@ -50,7 +50,7 @@ interface Props {
 
 export default function MacroRings({ protein, carbs, fats, proteinTarget, carbsTarget, fatTarget }: Props) {
   return (
-    <div className="flex items-center justify-center gap-6">
+    <div className="flex items-center justify-center gap-4 sm:gap-6">
       <MiniRing label="Protein" value={protein} target={proteinTarget} color="#3b82f6" />
       <MiniRing label="Carbs" value={carbs} target={carbsTarget} color="#f59e0b" />
       <MiniRing label="Fats" value={fats} target={fatTarget} color="#ef4444" />

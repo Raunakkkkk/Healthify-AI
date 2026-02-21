@@ -12,8 +12,10 @@ export interface AuthResponse {
 export interface Goal {
   _id: string;
   userId: string;
+  name?: string;
   startDate: string;
   endDate: string | null;
+  targetDate?: string | null;
   calorieTarget: number;
   proteinTarget: number;
   carbsTarget: number;

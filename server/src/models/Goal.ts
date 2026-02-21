@@ -2,8 +2,10 @@ import mongoose, { type Document } from "mongoose";
 
 export interface IGoal extends Document {
   userId: mongoose.Types.ObjectId;
+  name: string;
   startDate: Date;
   endDate: Date | null;
+  targetDate: Date | null; // when user aims to complete this goal
   calorieTarget: number;
   proteinTarget: number;
   carbsTarget: number;
@@ -20,8 +22,10 @@ const goalSchema = new mongoose.Schema<IGoal>(
       ref: "User",
       required: true,
     },
+    name: { type: String, default: "My Goal" },
     startDate: { type: Date, required: true },
     endDate: { type: Date, default: null },
+    targetDate: { type: Date, default: null },
     calorieTarget: { type: Number, required: true, min: 0 },
     proteinTarget: { type: Number, default: 0, min: 0 },
     carbsTarget: { type: Number, default: 0, min: 0 },

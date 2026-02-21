@@ -2,10 +2,20 @@ import mongoose from "mongoose";
 import FoodEntry from "../models/FoodEntry.js";
 import Goal from "../models/Goal.js";
 
-export async function getWeeklyCalories(userId: string) {
-  const end = new Date();
-  const start = new Date();
-  start.setDate(start.getDate() - 6);
+export async function getWeeklyCalories(
+  userId: string,
+  rangeStart?: Date,
+  rangeEnd?: Date
+) {
+  const start = rangeStart
+    ? new Date(rangeStart.getTime())
+    : (() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 6);
+        d.setHours(0, 0, 0, 0);
+        return d;
+      })();
+  const end = rangeEnd ? new Date(rangeEnd.getTime()) : new Date();
   start.setHours(0, 0, 0, 0);
   end.setHours(23, 59, 59, 999);
 
@@ -139,7 +149,7 @@ export async function getGoalVsActual(
   to.setHours(23, 59, 59, 999);
 
   const [weeklyData, goal] = await Promise.all([
-    getWeeklyCalories(userId),
+    getWeeklyCalories(userId, from, to),
     Goal.findOne({
       userId: new mongoose.Types.ObjectId(userId),
       startDate: { $lte: to },

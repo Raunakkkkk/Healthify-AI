@@ -18,12 +18,12 @@ export default function MacroBreakdownChart({ data }: Props) {
         <CardTitle className="text-base">Macro Breakdown</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-72">
+        <div className="h-56 sm:h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={formatted} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+            <BarChart data={formatted} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-              <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" unit="g" />
+              <XAxis dataKey="day" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+              <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" unit="g" width={45} />
               <Tooltip
                 contentStyle={{
                   background: "hsl(var(--card))",

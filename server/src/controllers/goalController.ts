@@ -4,7 +4,7 @@ import Goal from "../models/Goal.js";
 
 export async function getGoals(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    const { date } = req.query;
+    const { date, page = "1", limit = "10" } = req.query;
     const userId = req.userId;
 
     if (date) {
@@ -19,8 +19,24 @@ export async function getGoals(req: AuthRequest, res: Response, next: NextFuncti
       return;
     }
 
-    const goals = await Goal.find({ userId }).sort({ startDate: -1 });
-    res.json(goals);
+    const pageNum = Math.max(1, parseInt(page as string));
+    const limitNum = Math.min(50, Math.max(1, parseInt(limit as string)));
+    const skip = (pageNum - 1) * limitNum;
+
+    const [goals, total] = await Promise.all([
+      Goal.find({ userId }).sort({ startDate: -1 }).skip(skip).limit(limitNum),
+      Goal.countDocuments({ userId }),
+    ]);
+
+    res.json({
+      goals,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total,
+        pages: Math.ceil(total / limitNum),
+      },
+    });
   } catch (err) {
     next(err);
   }
@@ -29,13 +45,7 @@ export async function getGoals(req: AuthRequest, res: Response, next: NextFuncti
 export async function createGoal(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const userId = req.userId;
-
-    // Close any currently open goal
-    await Goal.updateMany(
-      { userId, endDate: null },
-      { endDate: new Date(req.body.startDate || Date.now()) }
-    );
-
+    // Allow multiple active goals; do not close existing ones
     const goal = await Goal.create({ ...req.body, userId });
     res.status(201).json(goal);
   } catch (err) {

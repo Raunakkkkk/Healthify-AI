@@ -10,7 +10,7 @@ interface Props {
 export default function CalorieTrendChart({ data, calorieTarget }: Props) {
   const formatted = data.map((d) => ({
     ...d,
-    day: new Date(d.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
+    day: new Date(d.date).toLocaleDateString("en-US", { weekday: "short", day: "numeric" }),
   }));
 
   return (
@@ -19,12 +19,12 @@ export default function CalorieTrendChart({ data, calorieTarget }: Props) {
         <CardTitle className="text-base">Weekly Calorie Trend</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-72">
+        <div className="h-56 sm:h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={formatted} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+            <LineChart data={formatted} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-              <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+              <XAxis dataKey="day" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" interval="preserveStartEnd" />
+              <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" width={40} />
               <Tooltip
                 contentStyle={{
                   background: "hsl(var(--card))",

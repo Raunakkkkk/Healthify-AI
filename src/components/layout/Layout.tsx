@@ -1,16 +1,21 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { useChatStore } from "@/store/chatStore";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import ChatPanel from "@/components/chat/ChatPanel";
+import ChatFab from "@/components/chat/ChatFab";
 
 export default function Layout() {
   const user = useAuthStore((s) => s.user);
+  const chatOpen = useChatStore((s) => s.open);
 
   if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <div className="flex h-screen bg-slate-50">
+    <TooltipProvider delayDuration={0}>
+    <div className="flex h-screen bg-background">
       <Sidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header />
@@ -19,6 +24,8 @@ export default function Layout() {
         </main>
       </div>
       <ChatPanel />
+      {!chatOpen && <ChatFab />}
     </div>
+    </TooltipProvider>
   );
 }

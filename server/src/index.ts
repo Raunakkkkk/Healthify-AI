@@ -11,6 +11,7 @@ import goalRoutes from "./routes/goals.js";
 import entryRoutes from "./routes/entries.js";
 import reportRoutes from "./routes/reports.js";
 import aiRoutes from "./routes/ai.js";
+import userRoutes from "./routes/user.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -45,6 +46,7 @@ app.use("/api/goals", goalRoutes);
 app.use("/api/entries", entryRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/ai", aiLimiter, aiRoutes);
+app.use("/api/user", userRoutes);
 
 // Health check
 app.get("/api/health", (_req, res) => {

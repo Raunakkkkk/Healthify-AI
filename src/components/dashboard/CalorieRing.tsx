@@ -12,7 +12,7 @@ export default function CalorieRing({ consumed, target }: Props) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative h-48 w-48">
+      <div className="relative h-40 w-40 sm:h-48 sm:w-48">
         <svg className="h-full w-full -rotate-90" viewBox="0 0 200 200">
           <circle cx="100" cy="100" r={radius} fill="none" stroke="hsl(var(--muted))" strokeWidth="12" />
           <circle
@@ -24,7 +24,7 @@ export default function CalorieRing({ consumed, target }: Props) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={`text-3xl font-bold ${isOver ? "text-destructive" : "text-foreground"}`}>
+          <span className={`text-2xl font-bold sm:text-3xl ${isOver ? "text-destructive" : "text-foreground"}`}>
             {Math.round(consumed)}
           </span>
           <span className="text-sm text-muted-foreground">/ {target} kcal</span>

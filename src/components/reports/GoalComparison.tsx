@@ -31,12 +31,12 @@ export default function GoalComparison({ data }: Props) {
         <CardTitle className="text-base">Goal vs Actual (Daily Avg)</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-72">
+        <div className="h-56 sm:h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={comparison} layout="vertical" margin={{ top: 5, right: 20, left: 60, bottom: 5 }}>
+            <BarChart data={comparison} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-              <YAxis dataKey="name" type="category" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+              <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+              <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" width={55} />
               <Tooltip
                 contentStyle={{
                   background: "hsl(var(--card))",

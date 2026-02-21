@@ -5,6 +5,7 @@ import {
   UtensilsCrossed,
   BarChart3,
   Target,
+  UserCircle,
   Menu,
   X,
   Salad,
@@ -14,12 +15,12 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
 const links = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/meals", icon: UtensilsCrossed, label: "Meals" },
   { to: "/reports", icon: BarChart3, label: "Reports" },
   { to: "/goals", icon: Target, label: "Goals" },
+  { to: "/profile", icon: UserCircle, label: "Profile" },
 ];
 
 export default function Sidebar() {
