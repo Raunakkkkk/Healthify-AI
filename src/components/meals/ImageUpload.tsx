@@ -19,7 +19,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Upload, Camera, Loader2, Check, X, Pencil, CheckCheck } from "lucide-react";
+import {
+  Upload,
+  Camera,
+  Loader2,
+  Check,
+  X,
+  Pencil,
+  CheckCheck,
+} from "lucide-react";
 import { useEntryStore } from "@/store/entryStore";
 import api from "@/lib/api";
 import type { ExtractionResult, ExtractedFood, MealType } from "@/types";
@@ -55,9 +63,13 @@ export default function ImageUpload() {
     formData.append("image", file);
 
     try {
-      const { data } = await api.post<ExtractionResult>("/ai/extract-nutrition", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const { data } = await api.post<ExtractionResult>(
+        "/ai/extract-nutrition",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
       setResult(data);
     } catch {
       toast.error("Failed to analyze image. Try manual entry.");
@@ -91,7 +103,11 @@ export default function ImageUpload() {
     if (fileRef.current) fileRef.current.value = "";
   };
 
-  const updateFood = (index: number, field: keyof ExtractedFood, value: string | number) => {
+  const updateFood = (
+    index: number,
+    field: keyof ExtractedFood,
+    value: string | number,
+  ) => {
     setFoodsDisplay((prev) => {
       const next = [...prev];
       next[index] = { ...next[index], [field]: value };
@@ -127,8 +143,13 @@ export default function ImageUpload() {
 
   return (
     <>
-      <Button variant="outline" size="sm" onClick={() => setOpen(true)} className="gap-2">
-        <Camera className="h-4 w-4" />
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setOpen(true)}
+        className="gap-2 sm:h-10 sm:px-4 lg:h-11 lg:gap-2.5 lg:px-6 lg:text-base"
+      >
+        <Camera className="h-4 w-4 lg:h-5 lg:w-5" />
         <span>Scan Food</span>
       </Button>
 
@@ -142,7 +163,8 @@ export default function ImageUpload() {
           <DialogHeader>
             <DialogTitle>AI Food Scanner</DialogTitle>
             <DialogDescription>
-              Upload a photo of food or a nutrition label. Review, edit if needed, then accept or reject.
+              Upload a photo of food or a nutrition label. Review, edit if
+              needed, then accept or reject.
             </DialogDescription>
           </DialogHeader>
 
@@ -155,18 +177,31 @@ export default function ImageUpload() {
               {uploading ? (
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  <p className="text-sm text-muted-foreground">Analyzing image with AI...</p>
+                  <p className="text-sm text-muted-foreground">
+                    Analyzing image with AI...
+                  </p>
                 </div>
               ) : (
                 <>
                   {previewUrl ? (
-                    <img src={previewUrl} alt="Preview" className="mb-4 max-h-48 rounded-lg" />
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="mb-4 max-h-48 rounded-lg"
+                    />
                   ) : (
                     <Upload className="mb-4 h-10 w-10 text-muted-foreground" />
                   )}
-                  <p className="mb-2 text-sm font-medium">Drag & drop an image here</p>
-                  <p className="mb-4 text-xs text-muted-foreground">or click to browse</p>
-                  <Button variant="outline" onClick={() => fileRef.current?.click()}>
+                  <p className="mb-2 text-sm font-medium">
+                    Drag & drop an image here
+                  </p>
+                  <p className="mb-4 text-xs text-muted-foreground">
+                    or click to browse
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => fileRef.current?.click()}
+                  >
                     Choose Image
                   </Button>
                   <input
@@ -174,7 +209,9 @@ export default function ImageUpload() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
+                    onChange={(e) =>
+                      e.target.files?.[0] && handleFile(e.target.files[0])
+                    }
                   />
                 </>
               )}
@@ -187,13 +224,19 @@ export default function ImageUpload() {
                   variant={result.confidence >= 0.7 ? "success" : "warning"}
                   className={getConfidenceColor(result.confidence)}
                 >
-                  {getConfidenceLabel(result.confidence)} ({Math.round(result.confidence * 100)}%)
+                  {getConfidenceLabel(result.confidence)} (
+                  {Math.round(result.confidence * 100)}%)
                 </Badge>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs">Meal type (for accepted items)</Label>
-                <Select value={mealType} onValueChange={(v) => setMealType(v as MealType)}>
+                <Label className="text-xs">
+                  Meal type (for accepted items)
+                </Label>
+                <Select
+                  value={mealType}
+                  onValueChange={(v) => setMealType(v as MealType)}
+                >
                   <SelectTrigger className="h-8">
                     <SelectValue />
                   </SelectTrigger>
@@ -210,7 +253,8 @@ export default function ImageUpload() {
               <div className="space-y-2 max-h-[280px] overflow-y-auto">
                 {foodsDisplay.length === 0 ? (
                   <p className="text-sm text-muted-foreground py-4 text-center">
-                    Could not parse nutrition from this response. Try another image or Reject.
+                    Could not parse nutrition from this response. Try another
+                    image or Reject.
                   </p>
                 ) : null}
                 {foodsDisplay.map((food, i) => (
@@ -222,7 +266,9 @@ export default function ImageUpload() {
                             <Label className="text-xs">Name</Label>
                             <Input
                               value={food.name}
-                              onChange={(e) => updateFood(i, "name", e.target.value)}
+                              onChange={(e) =>
+                                updateFood(i, "name", e.target.value)
+                              }
                               className="h-8 text-sm"
                             />
                           </div>
@@ -233,7 +279,13 @@ export default function ImageUpload() {
                               min={0.1}
                               step={0.5}
                               value={food.quantity}
-                              onChange={(e) => updateFood(i, "quantity", Number(e.target.value) || 1)}
+                              onChange={(e) =>
+                                updateFood(
+                                  i,
+                                  "quantity",
+                                  Number(e.target.value) || 1,
+                                )
+                              }
                               className="h-8 text-sm"
                             />
                           </div>
@@ -241,7 +293,9 @@ export default function ImageUpload() {
                             <Label className="text-xs">Unit</Label>
                             <Input
                               value={food.unit}
-                              onChange={(e) => updateFood(i, "unit", e.target.value)}
+                              onChange={(e) =>
+                                updateFood(i, "unit", e.target.value)
+                              }
                               className="h-8 text-sm"
                               placeholder="e.g. 1 cup, 2 slices, 100 g"
                             />
@@ -252,7 +306,13 @@ export default function ImageUpload() {
                               type="number"
                               min={0}
                               value={food.calories}
-                              onChange={(e) => updateFood(i, "calories", Number(e.target.value) || 0)}
+                              onChange={(e) =>
+                                updateFood(
+                                  i,
+                                  "calories",
+                                  Number(e.target.value) || 0,
+                                )
+                              }
                               className="h-8 text-sm"
                             />
                           </div>
@@ -262,7 +322,13 @@ export default function ImageUpload() {
                               type="number"
                               min={0}
                               value={food.protein}
-                              onChange={(e) => updateFood(i, "protein", Number(e.target.value) || 0)}
+                              onChange={(e) =>
+                                updateFood(
+                                  i,
+                                  "protein",
+                                  Number(e.target.value) || 0,
+                                )
+                              }
                               className="h-8 text-sm"
                             />
                           </div>
@@ -272,7 +338,13 @@ export default function ImageUpload() {
                               type="number"
                               min={0}
                               value={food.carbs}
-                              onChange={(e) => updateFood(i, "carbs", Number(e.target.value) || 0)}
+                              onChange={(e) =>
+                                updateFood(
+                                  i,
+                                  "carbs",
+                                  Number(e.target.value) || 0,
+                                )
+                              }
                               className="h-8 text-sm"
                             />
                           </div>
@@ -282,7 +354,13 @@ export default function ImageUpload() {
                               type="number"
                               min={0}
                               value={food.fats}
-                              onChange={(e) => updateFood(i, "fats", Number(e.target.value) || 0)}
+                              onChange={(e) =>
+                                updateFood(
+                                  i,
+                                  "fats",
+                                  Number(e.target.value) || 0,
+                                )
+                              }
                               className="h-8 text-sm"
                             />
                           </div>
@@ -311,10 +389,12 @@ export default function ImageUpload() {
                         </CardHeader>
                         <CardContent className="text-xs text-muted-foreground">
                           <p>
-                            {food.quantity} {food.unit} &middot; {food.calories} kcal
+                            {food.quantity} {food.unit} &middot; {food.calories}{" "}
+                            kcal
                           </p>
                           <p>
-                            P: {food.protein}g &middot; C: {food.carbs}g &middot; F: {food.fats}g
+                            P: {food.protein}g &middot; C: {food.carbs}g
+                            &middot; F: {food.fats}g
                           </p>
                         </CardContent>
                       </>
@@ -324,14 +404,22 @@ export default function ImageUpload() {
               </div>
 
               <DialogFooter className="flex flex-col sm:flex-row gap-2">
-                <Button variant="outline" onClick={tryAgain} className="gap-1 order-2 sm:order-1">
+                <Button
+                  variant="outline"
+                  onClick={tryAgain}
+                  className="gap-1 order-2 sm:order-1"
+                >
                   Try another image
                 </Button>
                 <div className="flex gap-2 order-1 sm:order-2">
                   <Button variant="outline" onClick={reject} className="gap-1">
                     <X className="h-4 w-4" /> Reject
                   </Button>
-                  <Button onClick={acceptAndSave} className="gap-1" disabled={foodsDisplay.length === 0}>
+                  <Button
+                    onClick={acceptAndSave}
+                    className="gap-1"
+                    disabled={foodsDisplay.length === 0}
+                  >
                     <Check className="h-4 w-4" /> Accept & save
                   </Button>
                 </div>

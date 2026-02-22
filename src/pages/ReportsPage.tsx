@@ -6,7 +6,12 @@ import MacroBreakdownChart from "@/components/reports/MacroBreakdownChart";
 import MicronutrientTable from "@/components/reports/MicronutrientTable";
 import GoalComparison from "@/components/reports/GoalComparison";
 import api from "@/lib/api";
-import type { DailyCalories, MacroDay, MicronutrientRow, GoalVsActual } from "@/types";
+import type {
+  DailyCalories,
+  MacroDay,
+  MicronutrientRow,
+  GoalVsActual,
+} from "@/types";
 import { useGoalStore } from "@/store/goalStore";
 
 export default function ReportsPage() {
@@ -45,8 +50,12 @@ export default function ReportsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Reports</h1>
-          <p className="text-muted-foreground">Visualize your nutrition data</p>
+          <h1 className="text-2xl font-bold tracking-tight lg:text-3xl">
+            Reports
+          </h1>
+          <p className="text-sm text-muted-foreground lg:text-base">
+            Visualize your nutrition data
+          </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
@@ -60,23 +69,38 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Reports</h1>
-        <p className="text-muted-foreground">Visualize your nutrition data over time</p>
+        <h1 className="text-2xl font-bold tracking-tight lg:text-3xl">
+          Reports
+        </h1>
+        <p className="text-sm text-muted-foreground lg:text-base">
+          Visualize your nutrition data over time
+        </p>
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
         <div className="overflow-x-auto -mx-1 px-1">
           <TabsList className="inline-flex w-auto min-w-full sm:w-full">
-            <TabsTrigger value="overview" className="flex-1">Overview</TabsTrigger>
-            <TabsTrigger value="macros" className="flex-1">Macros</TabsTrigger>
-            <TabsTrigger value="micros" className="flex-1">Micros</TabsTrigger>
-            <TabsTrigger value="goals" className="flex-1">Goals</TabsTrigger>
+            <TabsTrigger value="overview" className="flex-1">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="macros" className="flex-1">
+              Macros
+            </TabsTrigger>
+            <TabsTrigger value="micros" className="flex-1">
+              Micros
+            </TabsTrigger>
+            <TabsTrigger value="goals" className="flex-1">
+              Goals
+            </TabsTrigger>
           </TabsList>
         </div>
 
         <TabsContent value="overview" className="mt-4">
           <div className="grid gap-6 md:grid-cols-2">
-            <CalorieTrendChart data={weeklyCalories} calorieTarget={currentGoal?.calorieTarget} />
+            <CalorieTrendChart
+              data={weeklyCalories}
+              calorieTarget={currentGoal?.calorieTarget}
+            />
             <GoalComparison data={goalVsActual} />
           </div>
         </TabsContent>

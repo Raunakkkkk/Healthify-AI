@@ -59,7 +59,9 @@ export const useGoalStore = create<GoalState>((set, get) => ({
   createGoal: async (goal) => {
     const { data } = await api.post("/goals", {
       ...goal,
-      startDate: goal.startDate ? new Date(goal.startDate).toISOString() : new Date().toISOString(),
+      startDate: goal.startDate
+        ? new Date(goal.startDate).toISOString()
+        : new Date().toISOString(),
     });
     set((s) => ({
       goals: [data, ...s.goals],

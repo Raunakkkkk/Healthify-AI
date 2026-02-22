@@ -43,15 +43,6 @@ export function dateToLocalDateStr(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-export function getDateRange(days: number) {
-  const end = new Date();
-  const start = new Date();
-  start.setDate(start.getDate() - days + 1);
-  start.setHours(0, 0, 0, 0);
-  end.setHours(23, 59, 59, 999);
-  return { start: start.toISOString(), end: end.toISOString() };
-}
-
 export function getMealEmoji(meal: string) {
   const map: Record<string, string> = {
     breakfast: "🌅",

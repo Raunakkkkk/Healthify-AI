@@ -4,7 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { User, Mail, Lock, Calendar, Save, Loader2, Shield, KeyRound } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  Calendar,
+  Save,
+  Loader2,
+  Shield,
+  KeyRound,
+} from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import api from "@/lib/api";
 import toast from "react-hot-toast";
@@ -25,11 +34,14 @@ export default function ProfilePage() {
   const [savingPw, setSavingPw] = useState(false);
 
   useEffect(() => {
-    api.get("/user/profile").then(({ data }) => {
-      setName(data.name);
-      setEmail(data.email);
-      if (data.createdAt) setCreatedAt(data.createdAt);
-    }).catch(() => {});
+    api
+      .get("/user/profile")
+      .then(({ data }) => {
+        setName(data.name);
+        setEmail(data.email);
+        if (data.createdAt) setCreatedAt(data.createdAt);
+      })
+      .catch(() => {});
   }, []);
 
   const profileChanged = name !== user?.name || email !== user?.email;
@@ -43,7 +55,10 @@ export default function ProfilePage() {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      const { data } = await api.put("/user/profile", { name: name.trim(), email: email.trim() });
+      const { data } = await api.put("/user/profile", {
+        name: name.trim(),
+        email: email.trim(),
+      });
       setUser(data);
       toast.success("Profile updated");
     } catch (err: any) {
@@ -72,7 +87,9 @@ export default function ProfilePage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Profile</h1>
-        <p className="text-sm text-muted-foreground">Manage your account details</p>
+        <p className="text-sm text-muted-foreground">
+          Manage your account details
+        </p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -83,8 +100,12 @@ export default function ProfilePage() {
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-3xl font-bold text-primary-foreground">
                 {user?.name?.charAt(0).toUpperCase()}
               </div>
-              <p className="mt-4 truncate text-lg font-semibold">{user?.name}</p>
-              <p className="truncate text-sm text-muted-foreground">{user?.email}</p>
+              <p className="mt-4 truncate text-lg font-semibold">
+                {user?.name}
+              </p>
+              <p className="truncate text-sm text-muted-foreground">
+                {user?.email}
+              </p>
 
               {createdAt && (
                 <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -98,11 +119,15 @@ export default function ProfilePage() {
               <div className="w-full space-y-2 text-left text-sm">
                 <div className="flex items-center gap-2.5 rounded-lg bg-muted/50 px-3 py-2">
                   <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span className="truncate text-muted-foreground">{user?.email}</span>
+                  <span className="truncate text-muted-foreground">
+                    {user?.email}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2.5 rounded-lg bg-muted/50 px-3 py-2">
                   <Shield className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Password protected</span>
+                  <span className="text-muted-foreground">
+                    Password protected
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -147,7 +172,11 @@ export default function ProfilePage() {
                   disabled={!profileChanged || !profileValid || saving}
                   className="gap-2"
                 >
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                  {saving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4" />
+                  )}
                   Save Changes
                 </Button>
               </div>
@@ -195,9 +224,12 @@ export default function ProfilePage() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Re-enter new password"
                   />
-                  {confirmPassword.length > 0 && newPassword !== confirmPassword && (
-                    <p className="text-xs text-destructive">Passwords do not match</p>
-                  )}
+                  {confirmPassword.length > 0 &&
+                    newPassword !== confirmPassword && (
+                      <p className="text-xs text-destructive">
+                        Passwords do not match
+                      </p>
+                    )}
                 </div>
               </div>
 
@@ -208,7 +240,11 @@ export default function ProfilePage() {
                   variant="outline"
                   className="gap-2"
                 >
-                  {savingPw ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+                  {savingPw ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Lock className="h-4 w-4" />
+                  )}
                   Change Password
                 </Button>
               </div>

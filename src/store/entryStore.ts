@@ -2,8 +2,14 @@ import { create } from "zustand";
 import api from "@/lib/api";
 import type { FoodEntry, PaginatedResponse } from "@/types";
 import {
-  startOfDay, endOfDay, startOfWeek, endOfWeek,
-  startOfMonth, endOfMonth, startOfQuarter, endOfQuarter,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  startOfQuarter,
+  endOfQuarter,
 } from "date-fns";
 import { todayLocalDateStr } from "@/lib/utils";
 
@@ -34,7 +40,10 @@ function computeRange(dateStr: string, mode: RangeMode) {
     case "day":
       return { start: startOfDay(d), end: endOfDay(d) };
     case "week":
-      return { start: startOfWeek(d, { weekStartsOn: 1 }), end: endOfWeek(d, { weekStartsOn: 1 }) };
+      return {
+        start: startOfWeek(d, { weekStartsOn: 1 }),
+        end: endOfWeek(d, { weekStartsOn: 1 }),
+      };
     case "month":
       return { start: startOfMonth(d), end: endOfMonth(d) };
     case "quarter":
@@ -67,18 +76,15 @@ export const useEntryStore = create<EntryState>((set, get) => ({
       const { start, end } = computeRange(get().selectedDate, get().rangeMode);
       const p = page ?? get().pagination.page;
 
-      const { data } = await api.get<PaginatedResponse<FoodEntry>>(
-        "/entries",
-        {
-          params: {
-            start: start.toISOString(),
-            end: end.toISOString(),
-            page: String(p),
-            limit: String(get().pagination.limit),
-            sort: "-timestamp",
-          },
-        }
-      );
+      const { data } = await api.get<PaginatedResponse<FoodEntry>>("/entries", {
+        params: {
+          start: start.toISOString(),
+          end: end.toISOString(),
+          page: String(p),
+          limit: String(get().pagination.limit),
+          sort: "-timestamp",
+        },
+      });
       set({
         entries: data.entries,
         pagination: data.pagination,
@@ -100,6 +106,7 @@ export const useEntryStore = create<EntryState>((set, get) => ({
     set({
       entries: get().entries.map((e) => (e._id === id ? data : e)),
     });
+    get().fetchEntries(get().pagination.page);
   },
 
   deleteEntry: async (id) => {

@@ -30,7 +30,9 @@ export default function DashboardPage() {
 
   const loadWeekly = async () => {
     try {
-      const { data } = await api.get<DailyCalories[]>("/reports/weekly-calories");
+      const { data } = await api.get<DailyCalories[]>(
+        "/reports/weekly-calories",
+      );
       setWeeklyData(data);
     } catch {
       // Non-critical
@@ -40,21 +42,32 @@ export default function DashboardPage() {
   };
 
   const todayCalories = entries.reduce((s, e) => s + e.calories, 0);
-  const todayProtein = entries.reduce((s, e) => s + (e.macros?.protein || 0), 0);
+  const todayProtein = entries.reduce(
+    (s, e) => s + (e.macros?.protein || 0),
+    0,
+  );
   const todayCarbs = entries.reduce((s, e) => s + (e.macros?.carbs || 0), 0);
   const todayFats = entries.reduce((s, e) => s + (e.macros?.fats || 0), 0);
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:gap-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Your nutrition overview for today</p>
+          <h1 className="text-2xl font-bold tracking-tight lg:text-3xl">
+            Dashboard
+          </h1>
+          <p className="text-sm text-muted-foreground lg:text-base">
+            Your nutrition overview for today
+          </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex w-full gap-2 [&>*]:min-w-0 [&>*]:flex-1 sm:w-auto sm:flex-initial sm:flex-wrap [&>*]:sm:flex-none sm:gap-3 lg:gap-4 lg:shrink-0">
           <ImageUpload />
-          <Button onClick={() => setShowAddForm(true)} size="sm" className="gap-2 sm:size-default">
-            <Plus className="h-4 w-4" />
+          <Button
+            onClick={() => setShowAddForm(true)}
+            size="sm"
+            className="gap-2 sm:h-10 sm:px-4 lg:h-11 lg:gap-2.5 lg:px-6 lg:text-base"
+          >
+            <Plus className="h-4 w-4 lg:h-5 lg:w-5" />
             <span>Log Food</span>
           </Button>
         </div>
@@ -71,11 +84,16 @@ export default function DashboardPage() {
               <div>
                 <p className="text-lg font-semibold">Set your daily targets</p>
                 <p className="text-sm text-muted-foreground">
-                  Define calorie, protein, carbs, fats, and weight goals to start tracking progress.
+                  Define calorie, protein, carbs, fats, and weight goals to
+                  start tracking progress.
                 </p>
               </div>
             </div>
-            <Button size="lg" onClick={() => navigate("/goals")} className="shrink-0 gap-2">
+            <Button
+              size="lg"
+              onClick={() => navigate("/goals")}
+              className="shrink-0 gap-2"
+            >
               <Target className="h-4 w-4" /> Set Goals
             </Button>
           </CardContent>
@@ -86,20 +104,29 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="md:col-span-1">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Today's Calories</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Today's Calories
+            </CardTitle>
           </CardHeader>
           <CardContent className="flex justify-center pt-2">
-            <CalorieRing consumed={todayCalories} target={currentGoal?.calorieTarget || 0} />
+            <CalorieRing
+              consumed={todayCalories}
+              target={currentGoal?.calorieTarget || 0}
+            />
           </CardContent>
         </Card>
 
         <Card className="md:col-span-1">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Macros</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Macros
+            </CardTitle>
           </CardHeader>
           <CardContent className="flex justify-center pt-4">
             <MacroRings
-              protein={todayProtein} carbs={todayCarbs} fats={todayFats}
+              protein={todayProtein}
+              carbs={todayCarbs}
+              fats={todayFats}
               proteinTarget={currentGoal?.proteinTarget || 0}
               carbsTarget={currentGoal?.carbsTarget || 0}
               fatTarget={currentGoal?.fatTarget || 0}
@@ -109,13 +136,18 @@ export default function DashboardPage() {
 
         <Card className="md:col-span-2 lg:col-span-1">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">7-Day Trend</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              7-Day Trend
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {weeklyLoading ? (
               <Skeleton className="h-48 w-full" />
             ) : (
-              <WeeklySparkline data={weeklyData} calorieTarget={currentGoal?.calorieTarget} />
+              <WeeklySparkline
+                data={weeklyData}
+                calorieTarget={currentGoal?.calorieTarget}
+              />
             )}
           </CardContent>
         </Card>
@@ -123,7 +155,10 @@ export default function DashboardPage() {
 
       {/* Quick stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="cursor-pointer transition-colors hover:bg-muted/50" onClick={() => navigate("/meals")}>
+        <Card
+          className="cursor-pointer transition-colors hover:bg-muted/50"
+          onClick={() => navigate("/meals")}
+        >
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-primary/10 p-2.5">
               <TrendingUp className="h-5 w-5 text-primary" />
@@ -135,13 +170,18 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer transition-colors hover:bg-muted/50" onClick={() => navigate("/goals")}>
+        <Card
+          className="cursor-pointer transition-colors hover:bg-muted/50"
+          onClick={() => navigate("/goals")}
+        >
           <CardContent className="flex items-center gap-4 p-4">
             <div className="rounded-lg bg-blue-500/10 p-2.5">
               <Target className="h-5 w-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{currentGoal?.calorieTarget || "—"}</p>
+              <p className="text-2xl font-bold">
+                {currentGoal?.calorieTarget || "—"}
+              </p>
               <p className="text-xs text-muted-foreground">Calorie target</p>
             </div>
           </CardContent>
@@ -153,7 +193,9 @@ export default function DashboardPage() {
               <Camera className="h-5 w-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{entries.filter((e) => e.source === "ai").length}</p>
+              <p className="text-2xl font-bold">
+                {entries.filter((e) => e.source === "ai").length}
+              </p>
               <p className="text-xs text-muted-foreground">AI-logged entries</p>
             </div>
           </CardContent>
@@ -182,7 +224,11 @@ export default function DashboardPage() {
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Recent Entries</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate("/meals")}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/meals")}
+              >
                 View All
               </Button>
             </div>
@@ -190,12 +236,19 @@ export default function DashboardPage() {
           <CardContent>
             <div className="space-y-2">
               {entries.slice(0, 5).map((entry) => (
-                <div key={entry._id} className="flex items-center justify-between rounded-lg border p-3">
+                <div
+                  key={entry._id}
+                  className="flex items-center justify-between rounded-lg border p-3"
+                >
                   <div>
                     <p className="text-sm font-medium">{entry.foodName}</p>
-                    <p className="text-xs text-muted-foreground capitalize">{entry.mealType}</p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {entry.mealType}
+                    </p>
                   </div>
-                  <span className="text-sm font-semibold">{entry.calories} kcal</span>
+                  <span className="text-sm font-semibold">
+                    {entry.calories} kcal
+                  </span>
                 </div>
               ))}
             </div>
@@ -204,7 +257,10 @@ export default function DashboardPage() {
       )}
 
       {showAddForm && (
-        <FoodEntryForm open={showAddForm} onClose={() => setShowAddForm(false)} />
+        <FoodEntryForm
+          open={showAddForm}
+          onClose={() => setShowAddForm(false)}
+        />
       )}
     </div>
   );

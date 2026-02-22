@@ -107,22 +107,4 @@ export interface ExtractionResult {
   rawText: string;
 }
 
-export interface ChatMessageType {
-  _id: string;
-  role: "user" | "assistant";
-  content: string;
-  metadata?: {
-    intent?: string;
-    actionTaken?: string;
-  };
-  createdAt: string;
-}
-
-export interface ChatResponse {
-  response: string;
-  intent: string;
-  actionTaken?: string;
-  data?: any;
-}
-
 export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
