@@ -114,6 +114,7 @@ export default function MealTimeline() {
               <Calendar
                 mode="single"
                 selected={new Date(selectedDate + "T12:00:00")}
+                defaultMonth={new Date()}
                 onSelect={(day) => {
                   if (day) {
                     setSelectedDate(dateToLocalDateStr(day));

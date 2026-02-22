@@ -52,6 +52,12 @@ export default function FoodEntryForm({
   const [servings, setServings] = useState(1);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  const initialMicros = editEntry?.micronutrients
+    ? (editEntry.micronutrients instanceof Map
+        ? Object.fromEntries(editEntry.micronutrients as Map<string, number>)
+        : (editEntry.micronutrients as Record<string, number>))
+    : undefined;
+
   const [form, setForm] = useState({
     mealType: editEntry?.mealType || defaultMeal,
     foodName: editEntry?.foodName || "",
@@ -61,6 +67,7 @@ export default function FoodEntryForm({
     protein: editEntry?.macros?.protein || "",
     carbs: editEntry?.macros?.carbs || "",
     fats: editEntry?.macros?.fats || "",
+    micronutrients: initialMicros as Record<string, number> | undefined,
   });
 
   useEffect(() => {
@@ -84,6 +91,7 @@ export default function FoodEntryForm({
       protein: food.protein,
       carbs: food.carbs,
       fats: food.fats,
+      micronutrients: food.micronutrients ? { ...food.micronutrients } : undefined,
     });
     setMode("manual");
   };
@@ -92,21 +100,41 @@ export default function FoodEntryForm({
     if (val < 0.5) return;
     const ratio = val / servings;
     setServings(val);
-    setForm((prev) => ({
-      ...prev,
-      quantity: +(Number(prev.quantity) * ratio).toFixed(1),
-      calories: +(Number(prev.calories) * ratio).toFixed(0),
-      protein: +(Number(prev.protein) * ratio).toFixed(1),
-      carbs: +(Number(prev.carbs) * ratio).toFixed(1),
-      fats: +(Number(prev.fats) * ratio).toFixed(1),
-    }));
+    setForm((prev) => {
+      const next = {
+        ...prev,
+        quantity: +(Number(prev.quantity) * ratio).toFixed(1),
+        calories: +(Number(prev.calories) * ratio).toFixed(0),
+        protein: +(Number(prev.protein) * ratio).toFixed(1),
+        carbs: +(Number(prev.carbs) * ratio).toFixed(1),
+        fats: +(Number(prev.fats) * ratio).toFixed(1),
+      };
+      if (prev.micronutrients && Object.keys(prev.micronutrients).length > 0) {
+        next.micronutrients = Object.fromEntries(
+          Object.entries(prev.micronutrients).map(([k, v]) => [
+            k,
+            Math.round(Number(v) * ratio * 100) / 100,
+          ])
+        );
+      }
+      return next;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const payload = {
+      const payload: {
+        mealType: MealType;
+        foodName: string;
+        quantity: number;
+        unit: string;
+        calories: number;
+        macros: { protein: number; carbs: number; fats: number };
+        source: "manual";
+        micronutrients?: Record<string, number>;
+      } = {
         mealType: form.mealType as MealType,
         foodName: form.foodName,
         quantity: Number(form.quantity),
@@ -119,6 +147,9 @@ export default function FoodEntryForm({
         },
         source: "manual" as const,
       };
+      if (form.micronutrients && Object.keys(form.micronutrients).length > 0) {
+        payload.micronutrients = form.micronutrients;
+      }
 
       if (editEntry) {
         await updateEntry(editEntry._id, payload);
@@ -245,6 +276,7 @@ export default function FoodEntryForm({
                   onClick={() => {
                     setMode("search");
                     setQuery("");
+                    setForm((prev) => ({ ...prev, micronutrients: undefined }));
                   }}
                   className="gap-1 -ml-2 text-muted-foreground"
                 >
