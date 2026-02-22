@@ -25,7 +25,7 @@ export default function WeeklySparkline({ data, calorieTarget }: Props) {
               borderRadius: "8px",
               fontSize: "12px",
             }}
-            formatter={(value: number) => [`${value} kcal`, "Calories"]}
+            formatter={(value: number | undefined) => [`${value != null ? value : 0} kcal`, "Calories"]}
           />
           {calorieTarget && calorieTarget > 0 && (
             <ReferenceLine
