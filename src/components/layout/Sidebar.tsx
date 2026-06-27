@@ -11,6 +11,7 @@ import {
   PanelLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -33,6 +34,10 @@ export interface SidebarProps {
 
 const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
   const [collapsed, setCollapsed] = useState(false);
+  const isMobile = useIsMobile();
+  // Collapse is a desktop-only affordance. On mobile the drawer is always full width
+  // with labels — otherwise a desktop-collapsed state would open as an icon-only strip.
+  const isCollapsed = collapsed && !isMobile;
 
   return (
     <>
@@ -48,15 +53,15 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 flex flex-col border-r bg-card transition-all duration-200 md:static md:z-0",
-          collapsed ? "w-16" : "w-60",
+          isCollapsed ? "w-16" : "w-60",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
         )}
       >
         {/* Collapse toggle only */}
         <div
           className={cn(
-            "flex h-16 shrink-0 border-b flex-row items-center px-3",
-            collapsed ? "justify-center" : "justify-end",
+            "flex h-14 shrink-0 border-b flex-row items-center px-3",
+            isCollapsed ? "justify-center" : "justify-end",
           )}
         >
           <Button
@@ -65,11 +70,11 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
             onClick={() => setCollapsed((c) => !c)}
             className={cn(
               "hidden shrink-0 md:flex",
-              collapsed ? "h-9 w-9" : "h-8 w-8",
+              isCollapsed ? "h-9 w-9" : "h-8 w-8",
             )}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {collapsed ? (
+            {isCollapsed ? (
               <PanelLeft className="h-5 w-5" />
             ) : (
               <Menu className="h-4 w-4" />
@@ -78,7 +83,7 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
         </div>
 
         {/* Nav */}
-        <nav className={cn("flex-1 space-y-1", collapsed ? "px-3 py-3" : "p-3")}>
+        <nav className={cn("flex-1 space-y-1", isCollapsed ? "px-3 py-3" : "p-3")}>
           {links.map((link) => {
             const item = (
               <NavLink
@@ -89,20 +94,23 @@ const Sidebar: FC<SidebarProps> = ({ mobileOpen, setMobileOpen }) => {
                 className={({ isActive }) =>
                   cn(
                     "flex items-center gap-3 rounded-lg py-2.5 text-sm font-medium transition-colors",
-                    collapsed ? "justify-center px-2 min-w-[2.25rem]" : "px-3",
+                    isCollapsed ? "justify-center px-2 min-w-[2.25rem]" : "px-3",
                     isActive
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                    collapsed && isActive && "bg-primary/15",
+                    isCollapsed && isActive && "bg-primary/15",
+                    !isCollapsed &&
+                      isActive &&
+                      "shadow-[inset_3px_0_0_hsl(var(--primary))]",
                   )
                 }
               >
                 <link.icon className="h-5 w-5 shrink-0" />
-                {!collapsed && <span>{link.label}</span>}
+                {!isCollapsed && <span>{link.label}</span>}
               </NavLink>
             );
 
-            if (collapsed) {
+            if (isCollapsed) {
               return (
                 <Tooltip key={link.to}>
                   <TooltipTrigger asChild>{item}</TooltipTrigger>

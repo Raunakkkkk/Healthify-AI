@@ -10,13 +10,21 @@ import FoodEntryForm from "@/components/meals/FoodEntryForm";
 import ImageUpload from "@/components/meals/ImageUpload";
 import { useGoalStore } from "@/store/goalStore";
 import { useEntryStore } from "@/store/entryStore";
+import { useAuthStore } from "@/store/authStore";
 import api from "@/lib/api";
 import type { DailyCalories } from "@/types";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 export default function DashboardPage() {
   const { currentGoal, fetchCurrentGoal } = useGoalStore();
   const { entries, fetchEntries } = useEntryStore();
+  const user = useAuthStore((s) => s.user);
+  const firstName = user?.name?.split(" ")[0] ?? "";
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const todayLabel = format(new Date(), "EEEE, MMMM d");
   const [weeklyData, setWeeklyData] = useState<DailyCalories[]>([]);
   const [weeklyLoading, setWeeklyLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -54,11 +62,10 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:gap-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight lg:text-3xl">
-            Dashboard
+            {greeting}
+            {firstName ? `, ${firstName}` : ""}
           </h1>
-          <p className="text-sm text-muted-foreground lg:text-base">
-            Your nutrition overview for today
-          </p>
+          <p className="text-sm text-muted-foreground lg:text-base">{todayLabel}</p>
         </div>
         <div className="flex w-full gap-2 [&>*]:min-w-0 [&>*]:flex-1 sm:w-auto sm:flex-initial sm:flex-wrap [&>*]:sm:flex-none sm:gap-3 lg:gap-4 lg:shrink-0">
           <ImageUpload />
@@ -164,7 +171,7 @@ export default function DashboardPage() {
               <TrendingUp className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{entries.length}</p>
+              <p className="tabular font-display text-2xl font-bold">{entries.length}</p>
               <p className="text-xs text-muted-foreground">Entries today</p>
             </div>
           </CardContent>
@@ -175,11 +182,11 @@ export default function DashboardPage() {
           onClick={() => navigate("/goals")}
         >
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="rounded-lg bg-blue-500/10 p-2.5">
-              <Target className="h-5 w-5 text-blue-500" />
+            <div className="rounded-lg bg-primary/10 p-2.5">
+              <Target className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold">
+              <p className="tabular font-display text-2xl font-bold">
                 {currentGoal?.calorieTarget || "—"}
               </p>
               <p className="text-xs text-muted-foreground">Calorie target</p>
@@ -189,11 +196,11 @@ export default function DashboardPage() {
 
         <Card>
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="rounded-lg bg-amber-500/10 p-2.5">
-              <Camera className="h-5 w-5 text-amber-500" />
+            <div className="rounded-lg bg-energy/10 p-2.5">
+              <Camera className="h-5 w-5 text-energy" />
             </div>
             <div>
-              <p className="text-2xl font-bold">
+              <p className="tabular font-display text-2xl font-bold">
                 {entries.filter((e) => e.source === "ai").length}
               </p>
               <p className="text-xs text-muted-foreground">AI-logged entries</p>
@@ -203,11 +210,11 @@ export default function DashboardPage() {
 
         <Card>
           <CardContent className="flex items-center gap-4 p-4">
-            <div className="rounded-lg bg-emerald-500/10 p-2.5">
-              <TrendingUp className="h-5 w-5 text-emerald-500" />
+            <div className="rounded-lg bg-primary/10 p-2.5">
+              <TrendingUp className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold">
+              <p className="tabular font-display text-2xl font-bold">
                 {currentGoal && currentGoal.calorieTarget > 0
                   ? `${Math.round((todayCalories / currentGoal.calorieTarget) * 100)}%`
                   : "—"}
@@ -246,7 +253,7 @@ export default function DashboardPage() {
                       {entry.mealType}
                     </p>
                   </div>
-                  <span className="text-sm font-semibold">
+                  <span className="tabular text-sm font-semibold">
                     {entry.calories} kcal
                   </span>
                 </div>

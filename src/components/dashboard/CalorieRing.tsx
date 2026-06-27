@@ -12,30 +12,58 @@ export default function CalorieRing({ consumed, target }: Props) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative h-40 w-40 sm:h-48 sm:w-48">
+      <div className="relative h-44 w-44 sm:h-52 sm:w-52">
         <svg className="h-full w-full -rotate-90" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r={radius} fill="none" stroke="hsl(var(--muted))" strokeWidth="12" />
+          <defs>
+            <linearGradient id="calorieGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="hsl(160 84% 42%)" />
+              <stop offset="100%" stopColor="hsl(140 76% 55%)" />
+            </linearGradient>
+          </defs>
           <circle
-            cx="100" cy="100" r={radius} fill="none"
-            stroke={isOver ? "hsl(var(--destructive))" : "hsl(var(--primary))"}
-            strokeWidth="12" strokeLinecap="round"
-            strokeDasharray={circumference} strokeDashoffset={offset}
+            cx="100"
+            cy="100"
+            r={radius}
+            fill="none"
+            stroke="hsl(var(--muted))"
+            strokeWidth="14"
+          />
+          <circle
+            cx="100"
+            cy="100"
+            r={radius}
+            fill="none"
+            stroke={isOver ? "hsl(var(--energy))" : "url(#calorieGradient)"}
+            strokeWidth="14"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
             className="transition-all duration-1000 ease-out"
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className={`text-2xl font-bold sm:text-3xl ${isOver ? "text-destructive" : "text-foreground"}`}>
+          <span
+            className={`tabular font-display text-4xl font-bold leading-none sm:text-5xl ${
+              isOver ? "text-energy" : "text-foreground"
+            }`}
+          >
             {Math.round(consumed)}
           </span>
-          <span className="text-sm text-muted-foreground">/ {target} kcal</span>
+          <span className="tabular mt-1 text-xs text-muted-foreground sm:text-sm">
+            of {target.toLocaleString()} kcal
+          </span>
         </div>
       </div>
-      <p className="mt-2 text-sm font-medium">
+      <p className="tabular mt-3 text-sm font-medium">
         {target > 0 ? (
           isOver ? (
-            <span className="text-destructive">{Math.round(consumed - target)} kcal over</span>
+            <span className="text-energy">
+              {Math.round(consumed - target).toLocaleString()} kcal over
+            </span>
           ) : (
-            <span className="text-primary">{Math.round(target - consumed)} kcal remaining</span>
+            <span className="text-primary">
+              {Math.round(target - consumed).toLocaleString()} kcal left
+            </span>
           )
         ) : (
           <span className="text-muted-foreground">Set a goal to track progress</span>

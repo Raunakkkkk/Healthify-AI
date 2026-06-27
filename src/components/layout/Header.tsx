@@ -36,12 +36,14 @@ export default function Header({ onMobileMenuToggle }: HeaderProps) {
         )}
         <Link
           to="/"
-          className="flex items-center gap-2 rounded-lg transition-opacity hover:opacity-90"
+          className="flex items-center gap-2.5 rounded-lg transition-opacity hover:opacity-90"
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-emerald-400 text-primary-foreground shadow-sm">
             <Salad className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold tracking-tight">NutriTrack</span>
+          <span className="font-display text-lg font-bold tracking-tight">
+            Nutri<span className="text-primary">Track</span>
+          </span>
         </Link>
       </div>
       <div className="flex items-center gap-2 md:gap-3">

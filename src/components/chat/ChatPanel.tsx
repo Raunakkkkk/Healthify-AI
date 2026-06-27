@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState, useMemo, type FormEvent } from "react";
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useNutriChat, type ChatPart } from "@/hooks/useNutriChat";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { startOfDay, endOfDay, subDays } from "date-fns";
 import {
   X, Send, Bot, User, Loader2, Sparkles,
   UtensilsCrossed, Target, BarChart3, Pencil, Trash2, CalendarDays,
@@ -20,28 +18,37 @@ const SUGGESTIONS = [
   { text: "Give me a weekly summary", icon: Sparkles },
 ];
 
-/** Hide raw tool-call JSON that sometimes leaks into model text. */
-function filterToolCallJson(text: string): string {
-  const lines = text.split("\n");
-  const filtered = lines.filter(
-    (line) =>
-      !/^\s*\{\s*"name"\s*:\s*"[^"]+"\s*,\s*"parameters"\s*:\s*\{[^}]*\}\s*\}\s*$/.test(
-        line.trim()
-      )
-  );
-  const out = filtered.join("\n").trim();
-  return out.length > 0 ? out : "";
+/** Minimal inline markdown → React nodes: **bold**, __bold__, *italic*, _italic_, `code`. */
+function renderInlineMarkdown(text: string): ReactNode[] {
+  const nodes: ReactNode[] = [];
+  const re = /(\*\*([^*]+)\*\*|__([^_]+)__|\*([^*\n]+)\*|_([^_\n]+)_|`([^`]+)`)/g;
+  let last = 0;
+  let key = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) nodes.push(text.slice(last, m.index));
+    if (m[2] !== undefined || m[3] !== undefined) {
+      nodes.push(<strong key={key++}>{m[2] ?? m[3]}</strong>);
+    } else if (m[4] !== undefined || m[5] !== undefined) {
+      nodes.push(<em key={key++}>{m[4] ?? m[5]}</em>);
+    } else if (m[6] !== undefined) {
+      nodes.push(
+        <code key={key++} className="rounded bg-foreground/10 px-1 py-0.5 text-[0.85em]">
+          {m[6]}
+        </code>,
+      );
+    }
+    last = re.lastIndex;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes;
 }
 
-function ToolResultCard({ part }: { part: Record<string, unknown> }) {
-  const type = part.type as string;
-  const state = part.state as string;
-  if (state !== "output-available") return null;
-
-  const result = part.output as Record<string, unknown> | null;
+function ToolResultCard({ part }: { part: Extract<ChatPart, { type: "tool" }> }) {
+  const { name, output: result } = part;
   if (!result) return null;
 
-  if (type === "tool-logMeal") {
+  if (name === "logMeal") {
     if (result.success) {
       const logged = result.logged as Record<string, unknown>;
       const dailyTotals = result.dailyTotals as Record<string, number> | null;
@@ -75,7 +82,7 @@ function ToolResultCard({ part }: { part: Record<string, unknown> }) {
     );
   }
 
-  if (type === "tool-updateGoal" && result.success) {
+  if (name === "updateGoal" && result.success) {
     const g = result.goals as Record<string, number>;
     return (
       <div className="mt-2 rounded-md border bg-primary/5 p-2 text-xs">
@@ -93,7 +100,7 @@ function ToolResultCard({ part }: { part: Record<string, unknown> }) {
     );
   }
 
-  if (type === "tool-editEntry" && result.success) {
+  if (name === "editEntry" && result.success) {
     const u = result.updated as Record<string, unknown>;
     return (
       <div className="mt-2 rounded-md border bg-amber-500/10 p-2 text-xs">
@@ -108,7 +115,7 @@ function ToolResultCard({ part }: { part: Record<string, unknown> }) {
     );
   }
 
-  if (type === "tool-deleteEntry" && result.success) {
+  if (name === "deleteEntry" && result.success) {
     const d = result.deleted as Record<string, unknown>;
     return (
       <div className="mt-2 rounded-md border bg-destructive/10 p-2 text-xs">
@@ -123,7 +130,7 @@ function ToolResultCard({ part }: { part: Record<string, unknown> }) {
     );
   }
 
-  if (type === "tool-deleteGoal" && result.success) {
+  if (name === "deleteGoal" && result.success) {
     return (
       <div className="mt-2 rounded-md border bg-destructive/10 p-2 text-xs">
         <div className="flex items-center gap-1.5 font-medium text-destructive">
@@ -134,7 +141,7 @@ function ToolResultCard({ part }: { part: Record<string, unknown> }) {
     );
   }
 
-  if (type === "tool-getEntriesByDate") {
+  if (name === "getEntriesByDate") {
     const entries = result.entries as unknown[];
     if (!entries) return null;
     const totals = result.totals as Record<string, number>;
@@ -151,7 +158,7 @@ function ToolResultCard({ part }: { part: Record<string, unknown> }) {
     );
   }
 
-  if (type === "tool-getTodayEntries") {
+  if (name === "getTodayEntries") {
     const entries = (result.entries as unknown[]) ?? [];
     const totals = result.totals as Record<string, number> | undefined;
     const remaining = result.remaining as Record<string, number> | undefined;
@@ -174,7 +181,7 @@ function ToolResultCard({ part }: { part: Record<string, unknown> }) {
     );
   }
 
-  if (type === "tool-getCurrentGoals") {
+  if (name === "getCurrentGoals") {
     const hasGoals = result.hasGoals as boolean | undefined;
     if (!hasGoals) return null;
     return (
@@ -193,7 +200,7 @@ function ToolResultCard({ part }: { part: Record<string, unknown> }) {
     );
   }
 
-  if (type === "tool-getWeeklySummary") {
+  if (name === "getWeeklySummary") {
     const averages = result.averages as Record<string, number> | undefined;
     const targets = result.targets as Record<string, number> | undefined;
     return (
@@ -224,54 +231,19 @@ export default function ChatPanel() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState("");
 
-  const transport = useMemo(
-    () =>
-      new DefaultChatTransport({
-        api: "/api/ai/chat",
-        headers: () => {
-          const now = new Date();
-          const start = startOfDay(now).toISOString();
-          const end = endOfDay(now).toISOString();
-          const weekStart = startOfDay(subDays(now, 6)).toISOString();
-          const weekEnd = endOfDay(now).toISOString();
-          return {
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-            "X-Today-Start": start,
-            "X-Today-End": end,
-            "X-Week-Start": weekStart,
-            "X-Week-End": weekEnd,
-          };
-        },
-        fetch: (input, init) => {
-          const now = new Date();
-          const start = startOfDay(now).toISOString();
-          const end = endOfDay(now).toISOString();
-          const weekStart = startOfDay(subDays(now, 6)).toISOString();
-          const weekEnd = endOfDay(now).toISOString();
-          const base =
-            typeof input === "string"
-              ? input
-              : input instanceof Request
-                ? input.url
-                : input.href;
-          const urlObj = new URL(base, window.location.origin);
-          urlObj.searchParams.set("start", start);
-          urlObj.searchParams.set("end", end);
-          urlObj.searchParams.set("weekStart", weekStart);
-          urlObj.searchParams.set("weekEnd", weekEnd);
-          const url = urlObj.pathname + urlObj.search;
-          if (input instanceof Request) {
-            return fetch(new Request(url, input));
-          }
-          return fetch(url, init);
-        },
-      }),
-    []
-  );
-
-  const { messages, sendMessage, status, error } = useChat({ transport });
+  const { messages, sendMessage, status, error } = useNutriChat();
 
   const isLoading = status === "streaming" || status === "submitted";
+
+  // Show the "Thinking…" indicator only while genuinely waiting: a turn was sent
+  // but the assistant hasn't produced any text/tool content yet. Once content
+  // streams in, the bubble carries it and the indicator hides (no double-up).
+  const lastMsg = messages[messages.length - 1];
+  const showThinking =
+    isLoading &&
+    (!lastMsg ||
+      lastMsg.role === "user" ||
+      !lastMsg.parts.some((p) => (p.type === "text" && p.text) || p.type === "tool"));
 
   useEffect(() => {
     if (error) {
@@ -303,7 +275,7 @@ export default function ChatPanel() {
           </div>
           <div>
             <p className="text-sm font-semibold">NutriTrack AI</p>
-            <p className="text-[10px] text-muted-foreground">Powered by Ollama · Vercel AI SDK</p>
+            <p className="text-[10px] text-muted-foreground">Powered by Ollama · LangGraph</p>
           </div>
         </div>
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleChat}>
@@ -338,7 +310,14 @@ export default function ChatPanel() {
             </div>
           )}
 
-          {messages.map((msg) => (
+          {messages.map((msg) => {
+            const hasContent = msg.parts.some(
+              (p) => (p.type === "text" && p.text) || p.type === "tool",
+            );
+            // Don't render an assistant placeholder that has nothing yet — the
+            // "Thinking…" indicator below covers the waiting state.
+            if (msg.role === "assistant" && !hasContent) return null;
+            return (
             <div key={msg.id} className={cn("flex gap-2", msg.role === "user" ? "justify-end" : "justify-start")}>
               {msg.role === "assistant" && (
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
@@ -355,19 +334,16 @@ export default function ChatPanel() {
               >
                 {msg.parts.map((part, i) => {
                   if (part.type === "text" && part.text) {
-                    const filtered =
-                      msg.role === "assistant"
-                        ? filterToolCallJson(part.text)
-                        : part.text;
-                    if (!filtered) return null;
                     return (
                       <p key={i} className="whitespace-pre-wrap">
-                        {filtered}
+                        {msg.role === "assistant"
+                          ? renderInlineMarkdown(part.text)
+                          : part.text}
                       </p>
                     );
                   }
-                  if (typeof part.type === "string" && part.type.startsWith("tool-")) {
-                    return <ToolResultCard key={i} part={part as unknown as Record<string, unknown>} />;
+                  if (part.type === "tool") {
+                    return <ToolResultCard key={i} part={part} />;
                   }
                   return null;
                 })}
@@ -378,9 +354,10 @@ export default function ChatPanel() {
                 </div>
               )}
             </div>
-          ))}
+            );
+          })}
 
-          {isLoading && (
+          {showThinking && (
             <div className="flex items-center gap-2">
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <Bot className="h-3.5 w-3.5" />

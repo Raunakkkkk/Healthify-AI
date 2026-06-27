@@ -4,6 +4,10 @@ export interface IChatMessage extends Document {
   userId: mongoose.Types.ObjectId;
   role: "user" | "assistant";
   content: string;
+  parts?: Array<
+    | { type: "text"; text: string }
+    | { type: "tool"; name: string; output: Record<string, unknown> }
+  >;
   metadata?: {
     intent?: string;
     actionTaken?: string;
@@ -21,6 +25,7 @@ const chatMessageSchema = new mongoose.Schema<IChatMessage>(
     },
     role: { type: String, enum: ["user", "assistant"], required: true },
     content: { type: String, required: true },
+    parts: { type: mongoose.Schema.Types.Mixed, default: undefined },
     metadata: {
       intent: String,
       actionTaken: String,

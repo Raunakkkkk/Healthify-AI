@@ -4,26 +4,28 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 150 30% 98.5%;
+    --foreground: 200 18% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 200 18% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 160 84% 39%;
+    --popover-foreground: 200 18% 12%;
+    --primary: 160 84% 36%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 160 84% 39%;
-    --radius: 0.5rem;
+    --secondary: 150 18% 95%;
+    --secondary-foreground: 200 18% 18%;
+    --muted: 150 16% 95%;
+    --muted-foreground: 200 9% 44%;
+    --accent: 150 20% 93%;
+    --accent-foreground: 200 18% 18%;
+    --destructive: 0 80% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --energy: 25 95% 53%;
+    --energy-foreground: 0 0% 100%;
+    --border: 150 14% 89%;
+    --input: 150 14% 89%;
+    --ring: 160 84% 36%;
+    --radius: 0.7rem;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -35,25 +37,27 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 160 84% 39%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 50.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 160 84% 39%;
+    --background: 200 30% 6%;
+    --foreground: 150 12% 96%;
+    --card: 200 24% 9%;
+    --card-foreground: 150 12% 96%;
+    --popover: 200 24% 9%;
+    --popover-foreground: 150 12% 96%;
+    --primary: 160 78% 44%;
+    --primary-foreground: 160 90% 6%;
+    --secondary: 200 18% 15%;
+    --secondary-foreground: 150 12% 96%;
+    --muted: 200 16% 15%;
+    --muted-foreground: 200 10% 62%;
+    --accent: 200 18% 17%;
+    --accent-foreground: 150 12% 96%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --energy: 30 95% 58%;
+    --energy-foreground: 30 90% 8%;
+    --border: 200 16% 17%;
+    --input: 200 16% 17%;
+    --ring: 160 78% 44%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -77,5 +81,19 @@
       sans-serif;
     margin: 0;
     min-height: 100vh;
+  }
+
+  /* Display face carries the personality: page titles + card headings. */
+  h1,
+  h2,
+  h3 {
+    font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  /* Numbers (calories, macros, stats) read as data: aligned, even-width digits. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
   }
 }

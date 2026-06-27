@@ -4,12 +4,24 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+  			display: ['"Space Grotesk"', 'Inter', 'system-ui', 'sans-serif'],
+  		},
+  		boxShadow: {
+  			card: '0 1px 2px hsl(160 30% 10% / 0.04), 0 6px 16px -6px hsl(160 30% 10% / 0.10)',
+  			'card-hover': '0 2px 4px hsl(160 30% 10% / 0.06), 0 12px 28px -8px hsl(160 30% 10% / 0.16)',
+  		},
   		colors: {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+  			energy: {
+  				DEFAULT: 'hsl(var(--energy))',
+  				foreground: 'hsl(var(--energy-foreground))'
+  			},
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'

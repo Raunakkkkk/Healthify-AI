@@ -17,7 +17,7 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
     }
 
     const user = await User.create({ name, email, passwordHash: password });
-    const token = signToken(user._id as string);
+    const token = signToken(String(user._id));
 
     res.status(201).json({
       token,
@@ -44,7 +44,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       return;
     }
 
-    const token = signToken(user._id as string);
+    const token = signToken(String(user._id));
     res.json({
       token,
       user: { id: user._id, name: user.name, email: user.email },
