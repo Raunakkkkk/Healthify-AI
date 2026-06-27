@@ -1,10 +1,7 @@
-# NutriTrack — Personal Calorie & Nutrition Tracker
+# Health — Personal Calorie & Nutrition Tracker
 
-> **Full-stack assignment by Raunak Agarwal**
 
 NutriTrack is a full-stack web application that lets users log meals, set health goals, visualise nutritional trends, extract nutrition from food photos using AI, and interact with a conversational AI assistant — all with per-user data isolation.
-
-**[▶ Watch the demo video](https://drive.google.com/file/d/1muAlyUC2tOe99LatdkAeqkisA83MDFfa/view?usp=sharing)**
 
 ---
 
